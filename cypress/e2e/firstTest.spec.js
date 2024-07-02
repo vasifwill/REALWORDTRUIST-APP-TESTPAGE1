@@ -1,6 +1,7 @@
 describe('Test with backedn', () => {
   beforeEach('Login application',() => {
     cy.intercept('GET', 'https://conduit-api.bondaracademy.com/api/tags', {fixture: "tags.json"})
+    //cy.intercept('GET', path:'tags', {fixture: 'tags.json})
     cy.loginApp()
   });
   
@@ -14,6 +15,21 @@ describe('Test with backedn', () => {
     cy.get('[formcontrolname="description"').type('this is Vasif article description')
     cy.get('[formcontrolname="body"]').type('thisis vasif article body')
     cy.contains(' Publish Article ').click()
+
+// cy.intercept('POST, '**/articles', (req) => {
+// req.body.article.description.to.equal('This is vasif article description)}).as('postArticle)
+
+
+// cy.intercept('POST, '**/articles', (req) => {
+// req.reply( res => {
+
+  // expect(res.body.article.description.to.equal('This is vasif article description)
+// res.body.article.description = "This is vasif article description"
+// )}
+
+
+
+    
 
     cy.wait('@postArticle').then(xhr => {
       console.log(xhr)
