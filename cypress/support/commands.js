@@ -25,8 +25,8 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('loginApp', () => {
-    const signinBody = {"user":{"email":"vasif.will@gmail.com","password":"Baxter@2020"}}
-    cy.request('POST', 'https://conduit-api.bondaracademy.com/api/users/login', signinBody).its('body').then( body => {
+    const signinBody = {"user":{"email":Cypress.env('username'),"password":Cypress.env('password')}}
+    cy.request('POST', Cypress.env('apiUrl')+'/api/users/login', signinBody).its('body').then( body => {
         cy.wrap(body.user.token).as('token')
         
         const token = body.user.token
