@@ -48,7 +48,7 @@ describe('Test with backedn', () => {
 
   })
 //check like button
-  it.only('verigy global articles like buttons', () => {
+  it('verigy global articles like buttons', () => {
     cy.intercept('GET', 'https://conduit-api.bondaracademy.com/api/articles*', {fixture:'globalFeedArticle.json'})
     cy.contains('Global Feed').click()
     cy.get('app-article-list button').then(buttons => {
@@ -66,6 +66,49 @@ describe('Test with backedn', () => {
       cy.get('app-article-list button').eq(0).click().should('contain', '6')
 
     })
+
+  })
+
+
+  // create article and delete and check it if it is deleted
+  it.only('create and delete article',() => {
+    const createArticleBody = {
+      "article": {
+          "title": "version 7",
+          "description": "version 7",
+          "body": "version 7",
+          "tagList": []
+      }
+  }
+
+    cy.get('@token').then( token => {
+      cy.request({
+        url:'https://conduit-api.bondaracademy.com/api/articles/',
+        headers: {'Authorization': 'Token ' + token},
+        method: 'POST',
+        body: createArticleBody
+      })
+
+      // .then( res => {
+      //   expect(res.status).to.equal(200)
+      // })
+
+      cy.contains('Global Feed').click()
+      cy.wait(500)
+      cy.get('.article-preview').first().click()
+      cy.get('[class="article-actions"]').contains('Delete Article').click()
+
+      cy.request({
+        url:'https://conduit-api.bondaracademy.com/api/articles?limit=10&offset=0',
+        headers: {'Authorization': 'Token ' + token},
+        method: 'GET',
+      }).its('body').then(res => {
+        expect(res.articles[0].title).to.not.equal('version 7')
+      })
+  
+    })
+
+    
 
   })
 
